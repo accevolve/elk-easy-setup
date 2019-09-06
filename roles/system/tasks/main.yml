@@ -1,0 +1,9 @@
+---
+- name: Configuring system settings
+  import_tasks: config_system_settings.yml
+  become: yes
+  tags: ["never", "superuser"] # only configuring settings when it is a superuser
+
+- name: Syetem settings checks
+  import_tasks: check_system_settings.yml
+#  tags: ["superuser"] # always do check, whether it is superuser or not

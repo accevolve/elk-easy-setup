@@ -1,0 +1,19 @@
+---
+# The variables file used by the playbooks in the data group.
+
+jvm_heap_size: 26g
+
+node_type: data
+# you can specify start index, default from 0: data0, data1...
+node_name: data{{ groups["data"].index(inventory_hostname) + 0 }}
+#node_zones: "{{ ansible_play_hosts }}"
+#node_zone: "{{ inventory_hostname }}"
+
+node_master: false
+node_data: true
+node_ingest: false
+cluster_remote_connect: false
+
+network_host: 0.0.0.0
+transport_port: 9501
+http_port: 9401

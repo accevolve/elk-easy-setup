@@ -1,0 +1,13 @@
+---
+# base dir
+- name: Create manage-base dir
+  file:
+    path: "{{ base_dir }}"
+    state: directory
+
+- name: Prepare store-base dir
+  include_tasks: prepare_mnt_dirs.yml
+  vars:
+    mnt_dir: "{{ item }}"
+  loop: "{{ mount_dirs }}"
+  when: mount_dirs is defined

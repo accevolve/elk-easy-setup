@@ -1,0 +1,15 @@
+---
+- name: untar elasticsearch
+  unarchive:
+    src: "{{ es_home }}/elasticsearch-{{ es_version }}.tar.gz"
+    dest: "{{ es_home }}"
+    remote_src: yes
+
+- name: unzip ik
+  unarchive:
+    src: "{{ es_home }}/elasticsearch-analysis-ik-{{ es_version }}.zip"
+    dest: "{{ es_home }}/elasticsearch-{{ es_version }}/plugins"
+    remote_src: yes
+
+- name: rename ik
+  command: mv "{{ es_home }}/elasticsearch-{{ es_version }}/plugins/elasticsearch" "{{ es_home }}/elasticsearch-{{ es_version }}/plugins/analysis-ik"

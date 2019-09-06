@@ -1,0 +1,5 @@
+---
+# jdk_1.8 settings
+jdk8_version: 171
+jdk8_checksum256: b6dd2837efaaec4109b36cfbb94a774db100029f98b0d78be68c27bec0275982
+jdk8_url: https://github.com/frekele/oracle-java/releases/download/8u171-b11/

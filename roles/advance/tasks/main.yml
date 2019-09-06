@@ -1,0 +1,7 @@
+---
+- name: Prepare required dirs
+  import_tasks: mk_dirs.yml
+
+- name: Prepare jdk_1.8
+  import_tasks: jdk8.yml
+  tags: ["java"]

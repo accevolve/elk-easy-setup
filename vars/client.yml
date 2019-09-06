@@ -1,0 +1,19 @@
+---
+# The variables file used by the playbooks in the client group.
+
+jvm_heap_size: 6g
+
+node_type: client
+# you can specify start index, default from 0: client0, client1...
+node_name: client{{ groups["client"].index(inventory_hostname) + 0 }}
+#node_zones: "{{ ansible_play_hosts }}"
+#node_zone: "{{ inventory_hostname }}"
+
+node_master: false
+node_data: false
+node_ingest: false
+cluster_remote_connect: false
+
+network_host: 0.0.0.0
+transport_port: 9301
+http_port: 9201

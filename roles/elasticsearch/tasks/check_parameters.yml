@@ -1,0 +1,25 @@
+---
+# Check Elasticsearch settings
+- name: cluster_name checks
+  fail: msg="cluster_name must be specified and cannot be blank"
+  when: cluster_name is undefined or cluster_name == ''
+
+- name: es_version checks
+  fail: msg="es_version must be specified and cannot be blank"
+  when: es_version is undefined or es_version == ''
+
+- name: mount_dirs checks
+  fail: msg="mount_dirs must be specified and cannot be blank"
+  when: mount_dirs is undefined or mount_dirs|length == 0
+
+- name: data_node_configs checks
+  fail: msg="data_node_configs must be specified and cannot be blank"
+  when: data_node_configs is undefined or data_node_configs|length == 0
+
+- name: minimum_master_nodes checks
+  fail: msg="minimum_master_nodes must be specified and cannot be blank"
+  when: minimum_master_nodes is undefined or minimum_master_nodes == ''
+
+- name: awareness attributes checks
+  fail: msg="don't change awareness attributes"
+  when: es_config['cluster.routing.allocation.awareness.attributes'] is defined

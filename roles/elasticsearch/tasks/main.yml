@@ -1,0 +1,58 @@
+---
+- name: Check es parameters
+  import_tasks: check_parameters.yml
+
+- name: Set custom host facts
+  set_fact:
+    fact_node_name: "{{ hostvars[inventory_hostname].node_name \
+      if hostvars[inventory_hostname].node_name is defined else node_name }}"
+    fact_node_master: "{{ hostvars[inventory_hostname].node_master \
+      if hostvars[inventory_hostname].node_master is defined else node_master }}"
+    fact_node_data: "{{ hostvars[inventory_hostname].node_data \
+      if hostvars[inventory_hostname].node_data is defined else node_data }}"
+    fact_node_ingest: "{{ hostvars[inventory_hostname].node_ingest \
+      if hostvars[inventory_hostname].node_ingest is defined else node_ingest }}"
+    fact_http_port: "{{ hostvars[inventory_hostname].http_port \
+      if hostvars[inventory_hostname].http_port is defined else http_port }}"
+    fact_transport_port: "{{ hostvars[inventory_hostname].transport_port \
+      if hostvars[inventory_hostname].transport_port is defined else transport_port }}"
+
+- name: Create elasticsearch home directory
+  file:
+    path: "{{ es_home }}"
+    state: directory
+
+- name: Download elasticsearch file
+  import_tasks: get_es.yml
+  vars:
+    es_version_str: "{{ es_version if use_oss is undefined or not use_oss or es_version is version('6.3.0', '<') else 'oss-' + es_version }}"
+
+- name: Configuring elasticsearch settings
+  import_tasks: config_es_settings.yml
+  vars:
+    node_http_port: "{{ fact_http_port|int + sequence_id|int if node_type == 'data' else fact_http_port|int }}"
+    node_transport_port: "{{ fact_transport_port|int + sequence_id|int if node_type == 'data' else fact_transport_port|int }}"
+    node_sequence_name: "{{ fact_node_name if sequence_id is not defined else fact_node_name + '_' + sequence_id|string }}"
+    node_full_name: "{{ node_sequence_name if node_zone is not defined else node_zone + '_' + node_sequence_name }}"
+    node_conf_dir: "{{ es_conf_dir }}/{{ node_full_name }}"
+    node_data_dir: "{{ es_data_dir }}/{{ node_full_name }}"
+    node_logs_dir: "{{ es_logs_dir }}/{{ node_full_name }}"
+    data_mount_list: "{{ q('list', data_mount_dirs) if data_mount_dirs is string else data_mount_dirs }}"
+    log4j_src_file: "{{ 'log4j2.properties.6x.j2' if es_version is version('6.3.0', '>=') else 'log4j2.properties.5x.j2' }}"
+
+- name: Generate start elasticsearch shell
+  template:
+    src: start_elasticsearch.sh.j2
+    dest: "{{ es_home }}/start_elasticsearch.sh"
+    #backup: yes
+
+# install plugins...
+- name: Install ik plugin
+  import_tasks: get_plugins.yml
+  vars:
+    plugin_name: analysis-ik
+    plugin_url: "{{ ik_download_url }}/v{{ es_version }}/elasticsearch-analysis-ik-{{ es_version }}.zip"
+    plugin_zip: "{{ es_home }}/elasticsearch-analysis-ik-{{ es_version }}.zip"
+  tags:
+    - ik
+    - plugin

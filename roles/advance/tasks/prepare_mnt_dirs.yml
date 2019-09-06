@@ -1,0 +1,14 @@
+---
+- name: Check if mount dir is exists
+  stat:
+    path: "{{ mnt_dir }}"
+  register: md_result
+  tags: ["never", "superuser"]
+
+- name: Change mount dirs owner
+  file:
+    path: "{{ mnt_dir }}"
+    owner: "{{ ansible_user }}"
+  become: yes
+  when: md_result.stat.exists
+  tags: ["never", "superuser"]

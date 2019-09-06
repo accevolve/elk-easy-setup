@@ -1,0 +1,19 @@
+---
+- name: Download elasticsearch
+  get_url:
+    url: "{{ download_url }}/elasticsearch-{{ es_version_str }}.tar.gz"
+    dest: "{{ es_home }}/elasticsearch-{{ es_version_str }}.tar.gz"
+
+    #checksum: sha512:{{ lookup('vars', 'es_' + es_version | replace('.', '') + '_checksum512') }}
+  #notify:
+  #  - untar elasticsearch
+
+- name: Unarchive elasticsearch
+  unarchive:
+    src: "{{ es_home }}/elasticsearch-{{ es_version_str }}.tar.gz"
+    dest: "{{ es_home }}"
+    creates: "{{ es_home }}/elasticsearch-{{ es_version }}"
+    remote_src: yes
+
+
+

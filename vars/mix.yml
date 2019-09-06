@@ -1,0 +1,20 @@
+---
+# The variables file used by the playbooks in the mix group.
+
+jvm_heap_size: 8g
+
+# same as data type
+node_type: data
+# you can specify start index, default from 0: mix0, mix1...
+node_name: mix{{ groups["mix"].index(inventory_hostname) + 0 }}
+#node_zones: "{{ ansible_play_hosts }}"
+#node_zone: "{{ inventory_hostname }}"
+
+node_master: true
+node_data: true
+node_ingest: false
+cluster_remote_connect: false
+
+network_host: 0.0.0.0
+transport_port: 9301
+http_port: 9201

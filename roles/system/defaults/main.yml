@@ -1,0 +1,8 @@
+---
+# system settings
+vm_swappiness: 1
+vm_max_map_count: 262144
+
+nofile_limit: 100000
+memlock_limit: unlimited
+nproc_limit: 10000

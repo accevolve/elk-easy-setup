@@ -1,0 +1,22 @@
+---
+# default settings
+es_home: "{{ base_dir }}/{{ cluster_name }}/elasticsearch"
+es_conf_dir: "{{ es_home }}/config"
+es_logs_dir: "{{ es_home }}/logs"
+es_data_dir: "{{ es_home }}/data"
+
+# user inputs
+es_config: {}
+
+# config settings
+memory_lock: true
+system_call_filter: false
+minimum_master_nodes: 2
+script_allowed_types: none
+script_allowed_contexts: none
+#index_buffer_size: "45%"
+thread_pool_write_queue_size: 500
+
+cluster_routing_allocation_same_shard_host: true
+
+use_oss: true

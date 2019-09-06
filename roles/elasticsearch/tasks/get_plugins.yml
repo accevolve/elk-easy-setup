@@ -1,0 +1,20 @@
+---
+- name: Download plugin
+  get_url:
+    url: "{{ plugin_url }}"
+    dest: "{{ plugin_zip }}"
+
+- name: Install plugin
+  command: bin/elasticsearch-plugin install --batch --silent file://{{ plugin_zip }}
+  args:
+    chdir: "{{ es_home }}/elasticsearch-{{ es_version }}"
+    creates: plugins/{{ plugin_name }}
+  environment:
+    JAVA_HOME: "{{ fact_java_home }}"
+
+- name: Move plugin config
+  command: mv config/{{ plugin_name }} plugins/{{ plugin_name }}/config
+  args:
+    chdir: "{{ es_home }}/elasticsearch-{{ es_version }}"
+    creates: plugins/{{ plugin_name }}/config
+    removes: config/{{ plugin_name }}

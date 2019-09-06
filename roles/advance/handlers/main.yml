@@ -1,0 +1,9 @@
+---
+- name: untar jdk8
+  unarchive:
+    src: "{{ base_dir }}/jdk-8u{{ jdk8_version }}-linux-x64.tar.gz"
+    dest: "{{ base_dir }}"
+    remote_src: yes
+
+- name: reload profile
+  shell: . ~/.profile

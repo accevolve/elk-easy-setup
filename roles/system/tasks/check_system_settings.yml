@@ -1,0 +1,48 @@
+---
+# gather system settings
+- _gather_sys_settings: mount_dirs={{mount_dirs}} # multi params uses vars
+  become: no
+
+# do checks
+- name: vm.swappiness checks
+  fail: msg="Invalid vm.swappiness config"
+  when: hostvars[inventory_hostname]['_sysctl']['vm.swappiness'] > 1
+
+- name: vm.max_map_count checks
+  fail: msg="Invaild vm.max_map_count config"
+  when: >
+    hostvars[inventory_hostname]['_sysctl']['vm.max_map_count'] < 262144
+
+- name: nofile checks
+  fail: msg="Invalid nofile config"
+  when: >
+    hostvars[inventory_hostname]['_limits']['nofile_soft'] < 65535
+    or hostvars[inventory_hostname]['_limits']['nofile_hard'] < 65535
+
+- name: memlock checks
+  fail: msg="Invalid memlock config"
+  when: >
+    hostvars[inventory_hostname]['_limits']['memlock_soft'] != -1
+    or hostvars[inventory_hostname]['_limits']['memlock_hard'] != -1
+
+- name: nproc checks
+  fail: msg="Invalid nproc config"
+  when: >
+    hostvars[inventory_hostname]['_limits']['nproc_soft'] < 4096
+    or hostvars[inventory_hostname]['_limits']['nproc_hard'] < 4096
+
+- name: io scheduler checks
+  fail: msg="Invalid io scheduler config, it should be noop or deadline"
+  loop: "{{ mount_dirs }}"
+  when: >
+    hostvars[inventory_hostname]['_mount']['scheduler'][item] != '[noop]'
+    and hostvars[inventory_hostname]['_mount']['scheduler'][item] != '[deadline]'
+  tags: ["scheduler"]
+
+- name: filesystem checks
+  fail: msg="Invalid filesystem config, it should be xfs or ext4"
+  loop: "{{ mount_dirs }}"
+  when: >
+    hostvars[inventory_hostname]['_mount']['filesystem'][item] != 'xfs'
+    and hostvars[inventory_hostname]['_mount']['filesystem'][item] != 'ext4'
+  tags: ["filesystem"]

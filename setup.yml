@@ -1,0 +1,74 @@
+---
+- name: Config & Check syetem settings
+  hosts: all
+  become: yes
+  gather_facts: false
+  roles:
+    - system
+
+- name: Prepare in advance
+  hosts: all
+  gather_facts: false
+  roles:
+    - advance
+
+- name: Collect unicast hosts
+  hosts: all
+  gather_facts: false
+  vars_files:
+    - ["{{ inventory_dir }}/vars/{{ 'master' if groups['master'] is defined else 'mix' }}.yml",
+       "vars/{{ 'master' if groups['master'] is defined else 'mix' }}.yml"]
+  tasks:
+    - set_fact:
+        unicast_host: "{{ hostvars[item_master_host].ansible_host }}:{{ hostvars[item_master_host].transport_port \
+          if hostvars[item_master_host].transport_port is defined else transport_port }}"
+      loop: "{{ groups['master'] if groups['master'] is defined else groups['mix'] }}"
+      loop_control:
+        loop_var: item_master_host
+      when: (hostvars[item_master_host].node_master if hostvars[item_master_host].node_master is defined else node_master) | bool
+      register: host_fact
+    - set_fact:
+        unicast_hosts: "{{ host_fact.results | selectattr('ansible_facts', 'defined') | \
+          selectattr('ansible_facts.unicast_host', 'defined') | map(attribute='ansible_facts.unicast_host') | list }}"
+
+- name: Deploy elasticsearch master node
+  hosts: master
+  gather_facts: false
+  vars_files:
+    - ["{{ inventory_dir }}/vars/master.yml", "vars/master.yml"]
+  roles:
+    - {role: elasticsearch, data_mount_dirs: "{{ mount_dirs[0] }}" }
+
+- name: Deploy elasticsearch data node
+  hosts: data
+  gather_facts: false
+  vars_files:
+    - ["{{ inventory_dir }}/vars/data.yml", "vars/data.yml"]
+  tasks:
+    - include_role:
+        name: elasticsearch
+      vars:
+        sequence_id: "{{ item.id }}"
+        data_mount_dirs: "{{ item.data_dirs }}"
+      with_items: "{{ data_node_configs }}"
+
+- name: Deploy elasticsearch client node
+  hosts: client
+  gather_facts: false
+  vars_files:
+    - ["{{ inventory_dir }}/vars/client.yml", "vars/client.yml"]
+  roles:
+    - elasticsearch
+
+- name: Deploy elasticsearch node (mixed, used for test case)
+  hosts: mix
+  gather_facts: false
+  vars_files:
+    - ["{{ inventory_dir }}/vars/mix.yml", "vars/mix.yml"]
+  tasks:
+    - include_role:
+        name: elasticsearch
+      vars:
+        sequence_id: "{{ item.id }}"
+        data_mount_dirs: "{{ item.data_dirs }}"
+      with_items: "{{ data_node_configs }}"

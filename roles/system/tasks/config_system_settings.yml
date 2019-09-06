@@ -1,0 +1,47 @@
+---
+## Configuring system settings
+# https://www.elastic.co/guide/en/elasticsearch/reference/current/system-config.html
+
+# /etc/sysctl.conf
+- name: Config vm.swappiness
+  sysctl:
+    name: vm.swappiness
+    value: "{{ vm_swappiness }}"
+    state: present
+
+- name: Config vm.max_map_count
+  sysctl:
+    name: vm.max_map_count
+    value: "{{ vm_max_map_count }}"
+    state: present
+
+# /etc/security/limits.conf
+- name: Config nofile limits
+  pam_limits:
+    domain: "{{ item }}"
+    limit_type: "-"
+    limit_item: nofile
+    value: "{{ nofile_limit }}"
+  loop:
+    - root
+    - "*"
+
+- name: Config memlock limits
+  pam_limits:
+    domain: "{{ item }}"
+    limit_type: "-"
+    limit_item: memlock
+    value: "{{ memlock_limit }}"
+  loop:
+    - root
+    - "*"
+
+- name: Config nproc limits
+  pam_limits:
+    domain: "{{ item }}"
+    limit_type: "-"
+    limit_item: nproc
+    value: "{{ nproc_limit }}"
+  loop:
+    - root
+    - "*"

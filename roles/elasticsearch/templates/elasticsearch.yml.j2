@@ -1,0 +1,101 @@
+# bootstrap
+{% if es_config['bootstrap.memory_lock'] is undefined %}
+bootstrap.memory_lock: {{ memory_lock | to_json }}
+{% endif %}
+{% if es_config['bootstrap.system_call_filter'] is undefined %}
+bootstrap.system_call_filter: {{ system_call_filter | to_json }}
+{% endif %}
+
+# cluster
+{% if es_config['cluster.name'] is undefined %}
+cluster.name: {{ cluster_name | to_json }}
+{% endif %}
+{% if node_type != 'client' and node_zones is defined %}
+cluster.routing.allocation.awareness.attributes: zone
+{% if es_config['cluster.routing.allocation.awareness.force.zone.values'] is undefined and node_zones is defined %}
+cluster.routing.allocation.awareness.force.zone.values: {{ node_zones | unique | to_json }}
+{% endif %}
+{% endif %}
+{% if es_config['cluster.routing.allocation.same_shard.host'] is undefined %}
+cluster.routing.allocation.same_shard.host: {{ cluster_routing_allocation_same_shard_host | to_json }}
+{% endif %}
+
+# node
+{% if es_config['node.name'] is undefined %}
+node.name: {{ node_full_name | to_json }}
+{% endif %}
+{% if node_type != 'client' %}
+{% if es_config['node.attr.zone'] is undefined and node_zone is defined %}
+node.attr.zone: {{ node_zone | to_json }}
+{% endif %}
+{% endif %}
+{% if es_config['node.master'] is undefined %}
+node.master: {{ fact_node_master | to_json }}
+{% endif %}
+{% if es_config['node.data'] is undefined %}
+node.data: {{ fact_node_data | to_json }}
+{% endif %}
+{% if es_config['node.ingest'] is undefined %}
+node.ingest: {{ fact_node_ingest | to_json }}
+{% endif %}
+{% if es_config['cluster.remote.connect'] is undefined and es_version is version('6.5.0', '>=') %}
+cluster.remote.connect: {{ cluster_remote_connect | to_json if cluster_remote_connect is defined else search_remote_connect | to_json }}
+{% endif %}
+{% if es_config['search.remote.connect'] is undefined and es_version is version('6.5.0', '<') %}
+search.remote.connect: {{ cluster_remote_connect | to_json if cluster_remote_connect is defined else search_remote_connect | to_json }}
+{% endif %}
+
+# paths
+{% if node_type != 'client' %}
+{% if es_config['path.data'] is undefined %}
+path.data: {{ node_data_dirs | unique | to_json }}
+{% endif %}
+{% endif %}
+{% if es_config['path.logs'] is undefined %}
+path.logs: {{ node_logs_dir | to_json }}
+{% endif %}
+
+# network
+{% if es_config['network.host'] is undefined %}
+network.host: {{ network_host | to_json }}
+{% endif %}
+{% if es_config['transport.tcp.port'] is undefined %}
+transport.tcp.port: {{ node_transport_port | to_json }}
+{% endif %}
+{% if es_config['http.port'] is undefined %}
+http.port: {{ node_http_port | to_json }}
+{% endif %}
+
+# discovery
+{% if es_config['discovery.zen.ping.unicast.hosts'] is undefined %}
+discovery.zen.ping.unicast.hosts: {{ unicast_hosts | unique | to_json }}
+{% endif %}
+{% if es_config['discovery.zen.minimum_master_nodes'] is undefined %}
+discovery.zen.minimum_master_nodes: {{ minimum_master_nodes | to_json }}
+{% endif %}
+
+# security
+{% if es_config['script.allowed_types'] is undefined %}
+#script.allowed_types: {{ script_allowed_types | to_json }}
+{% endif %}
+{% if es_config['script.allowed_contexts'] is undefined %}
+#script.allowed_contexts: {{ script_allowed_contexts | to_json }}
+{% endif %}
+
+# indices
+{% if es_config['indices.memory.index_buffer_size'] is undefined and index_buffer_size is defined %}
+indices.memory.index_buffer_size: {{ index_buffer_size | to_json }}
+{% endif %}
+
+# thread pool
+{% if es_config['thread_pool.write.queue_size'] is undefined and es_version is version('6.3.0', '>=') %}
+thread_pool.write.queue_size: {{ thread_pool_write_queue_size | to_json }}
+{% endif %}
+{% if es_config['thread_pool.bulk.queue_size'] is undefined and es_version is version('6.3.0', '<') %}
+thread_pool.bulk.queue_size: {{ thread_pool_write_queue_size | to_json }}
+{% endif %}
+
+# custom input vars
+{% if es_config %}
+{{ es_config | to_nice_yaml }}
+{% endif %}

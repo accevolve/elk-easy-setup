@@ -1,0 +1,76 @@
+#! /bin/sh
+
+echo "===START==="
+
+ES_HOME="{{ es_home }}"
+ES_ACTIVE_VERSION="{{ es_version }}"
+
+# test if use custom es version
+if [ $# -ge 1 ]; then
+    echo "[`date +'%Y-%m-%d %H:%M:%S'`] Use custom input Es-Ver($1) to start service."
+    ES_ACTIVE_VERSION=$1
+fi
+
+cd $ES_HOME
+if [ $? -ne 0 ]; then
+    echo "[`date +'%Y-%m-%d %H:%M:%S'`] Enter to es_home failed."
+    exit 1
+fi
+
+start_6x_es() {
+    # check args
+    if [ $# -ne 1 ]; then
+        echo "[`date +'%Y-%m-%d %H:%M:%S'`] Invalid input args number."
+        exit 1
+    fi
+
+    # do start
+    export ES_PATH_CONF=$ES_HOME/config/$1
+    ./elasticsearch-${ES_ACTIVE_VERSION}/bin/elasticsearch -d >/dev/null 2>&1
+    if [ $? -ne 0 ]; then
+        echo "[`date +'%Y-%m-%d %H:%M:%S'`] Start Es node($1) failed."
+        exit 1
+    fi
+}
+
+start_5x_es() {
+    # check args
+    if [ $# -ne 1 ]; then
+        echo "[`date +'%Y-%m-%d %H:%M:%S'`] Invalid input args number."
+        exit 1
+    fi
+
+    # do start
+    export ES_JVM_OPTIONS=$ES_HOME/config/$1/jvm.options
+    ./elasticsearch-${ES_ACTIVE_VERSION}/bin/elasticsearch -d -Epath.conf=$ES_HOME/config/$1/ >/dev/null 2>&1
+    if [ $? -ne 0 ]; then
+        echo "[`date +'%Y-%m-%d %H:%M:%S'`] Start Es node($1) failed."
+        exit 1
+    fi
+}
+
+CONF_DIRS=`ls ./config/`
+for conf in $CONF_DIRS
+do
+    PROCESS_NUM=`ps -ef | grep $ES_HOME/config/$conf | grep -v grep | wc -l`
+    if [ $PROCESS_NUM -gt 0 ]; then
+        # some process already exist, we need to avoid confict...
+        echo "[`date +'%Y-%m-%d %H:%M:%S'`] Skip start ($conf)."
+        continue
+    fi
+
+    # check active es version
+    FIRST_CHR=`echo $ES_ACTIVE_VERSION | cut -c 1`
+    if [ $FIRST_CHR -eq 6 ]; then
+        echo "[`date +'%Y-%m-%d %H:%M:%S'`] Start Es node ($conf)."
+        start_6x_es $conf
+    elif [ $FIRST_CHR -eq 5 ]; then
+        echo "[`date +'%Y-%m-%d %H:%M:%S'`] Start Es node ($conf)."
+        start_5x_es $conf
+    else
+        echo "[`date +'%Y-%m-%d %H:%M:%S'`] Unsupported es version."
+    fi
+
+done
+
+echo "===END==="

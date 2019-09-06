@@ -1,0 +1,29 @@
+---
+## installing java
+# https://www.elastic.co/guide/en/elasticsearch/reference/current/setup.html
+
+#- name: jvm vars
+#  include_vars: jvm.yml
+
+- name: Installing JDK_1.8
+  get_url:
+    url: "{{ jdk8_url }}/jdk-8u{{ jdk8_version }}-linux-x64.tar.gz"
+    dest: "{{ base_dir }}/jdk-8u{{ jdk8_version }}-linux-x64.tar.gz"
+    checksum: sha256:{{ jdk8_checksum256 }}
+  notify:
+    - untar jdk8
+
+- name: Set JAVA_HOME
+  set_fact:
+    fact_java_home: "{{ base_dir }}/jdk1.8.0_{{ jdk8_version }}"
+
+- name: Configure JDK settings
+  blockinfile:
+    path: ~/.profile
+    create: yes
+    block: |
+      export JAVA_HOME={{ fact_java_home }}
+      export PATH=$JAVA_HOME/bin:$PATH
+      export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
+  notify:
+    - reload profile

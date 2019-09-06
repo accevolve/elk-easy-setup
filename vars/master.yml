@@ -1,0 +1,19 @@
+---
+# The variables file used by the playbooks in the master group.
+
+jvm_heap_size: 4g
+
+node_type: master
+# you can specify start index, default from 0: master0, master1...
+node_name: master{{ groups["master"].index(inventory_hostname) + 0 }}
+#node_zones: "{{ ansible_play_hosts }}"
+#node_zone: "{{ inventory_hostname }}"
+
+node_master: true
+node_data: false
+node_ingest: false
+cluster_remote_connect: false
+
+network_host: 0.0.0.0
+transport_port: 9701
+http_port: 9601

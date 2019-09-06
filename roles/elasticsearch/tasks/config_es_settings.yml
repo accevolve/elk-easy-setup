@@ -1,0 +1,62 @@
+---
+## Configuring Elasticsearch settings
+
+- name: Create elasticsearch mgr directory
+  file:
+    path: "{{ item_mgr_dir }}"
+    state: directory
+  loop:
+    - "{{ node_conf_dir }}"
+    - "{{ node_logs_dir }}"
+  loop_control:
+    loop_var: item_mgr_dir
+
+- name: Create elasticsearch data-mgr directory
+  file:
+    path: "{{ node_data_dir }}"
+    state: directory
+  when: (node_type == "master") or (node_type == "data")
+
+- name: Create & link elasticsearch data-store directory
+  include_tasks: mk_store_dirs.yml
+  vars:
+    mnt_dir: "{{ item_store_dir }}"
+    mnt_idx: "{{ idx_store_dir }}"
+  loop: "{{ data_mount_list }}"
+  loop_control:
+    loop_var: item_store_dir
+    index_var: idx_store_dir
+  when: node_type in ["master", "data"]
+
+- name: Generate path.data variable
+  set_fact:
+    data_dir: "{{ node_data_dir }}/mnt{{ idx_mnt_dir }}"
+  loop: "{{ data_mount_list }}"
+  loop_control:
+    loop_var: item_mnt_dir
+    index_var: idx_mnt_dir
+  register: dir_fact
+  when: node_type in ["master", "data"]
+
+- name: Set path.data variable to list
+  set_fact:
+    node_data_dirs: "{{ dir_fact.results | map(attribute='ansible_facts.data_dir') | list }}"
+  when: node_type in ["master", "data"]
+
+- name: Generate & copy elasticsearch config file
+  template:
+    src: elasticsearch.yml.j2
+    dest: "{{ node_conf_dir }}/elasticsearch.yml"
+    backup: yes
+
+- name: Generate & copy log4j2.properties file
+  copy:
+    src: "roles/elasticsearch/templates/{{ log4j_src_file }}"
+    dest: "{{ node_conf_dir }}/log4j2.properties"
+    backup: yes
+
+- name: Generate & copy jvm.options file
+  template:
+    src: jvm.options.j2
+    dest: "{{ node_conf_dir }}/jvm.options"
+    backup: yes

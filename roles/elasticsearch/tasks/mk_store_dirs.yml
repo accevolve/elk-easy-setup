@@ -1,0 +1,27 @@
+---
+- name: Check if mount dir is exists
+  stat:
+    path: "{{ mnt_dir }}"
+  register: md_result
+
+- set_fact:
+    mnt_store_dir: "{{ mnt_dir | regex_replace('\\/$', '') }}/{{ project_name }}/{{ cluster_name }}/{{ node_full_name }}"
+
+- name: Create elasticsearch store directory
+  file:
+    path: "{{ mnt_store_dir }}"
+    state: directory
+  when: md_result.stat.exists
+
+- name: Link manage-dirs to store-dirs
+  file:
+    src: "{{ mnt_store_dir }}"
+    dest: "{{ node_data_dir }}/mnt{{ mnt_idx }}"
+    state: link
+  when: md_result.stat.exists
+
+- name: Create local store-dirs(in manage-dir) if mount dir is not exists
+  file:
+    path: "{{ node_data_dir }}/mnt{{ mnt_idx }}"
+    state: directory
+  when: md_result.stat.exists == false
