@@ -2,20 +2,20 @@
 
 ![](https://img.shields.io/badge/ansible-%3E%3D2.5-red) ![](https://img.shields.io/badge/elasticsearch-5.x%2C%206.x-9cf) ![](https://img.shields.io/badge/license-Apache--2.0-brightgreen)
 
-> 1. 此安装部署程序运行环境要求： Ansible >= 2.5（es 部署节点无须安装，只需要确保有 SSH 登录权限）  
+> 1. 此安装部署程序运行环境要求： Ansible >= 2.5（es 部署节点无须安装，只需确保有 SSH 登录权限）  
 > 2. 目前支持部署的 es 版本：5.x, 6.x
 
 ## :rocket: 快速使用说明
 
 ### 第一步：修改配置项
 
-拷贝或直接修改 `example.cfg` 配置文件，填写 `集群名称`、`es 版本` 等信息。
+拷贝或直接修改 `example.cfg` 配置文件，填写 `集群名称`、`es 版本..` 等信息。
 
 ### 第二步：节点 `ES_HEAP_SIZE` 配置
 
-在 `vars` 目录下，分别有各角色节点对应的配置文件，如默认 `HEAP` 大小不满足要求，可以对 `jvm_heap_size` 值进行修改。
+如必要，修改 `vars` 目录下，节点角色对应名称配置文件的 `jvm_heap_size` 默认值至自定义大小。
 
-关于各角色说明参考下面`其他事项`小节。
+> 如 `master` 角色节点修改 `master.yml` 文件，`mix` 节点修改 `mix.yml` 文件，文件中其他配置项按需也可以修改。所有相同角色节点使用相同配置。
 
 ### 第三步：一键安装
 
@@ -24,6 +24,7 @@ ansible-playbook -i example.cfg setup.yml -v
 ```
 
 ### 第四步：启动集群
+
 安装完毕后进入 `/home/<部署用户>/elk/elasticsearch`目录，内含 `start_elasticsearch.sh` 启动脚本。执行 `sh start_elasticsearch.sh` 命令启动 es 服务即可。
 
 ### 第五步：部署完毕
@@ -32,9 +33,9 @@ ansible-playbook -i example.cfg setup.yml -v
 
 ## :fire: 其他事项
 
-1. 关于**节点角色**说明：如果部署的集群为`生产环境`使用，建议区分 es 节点角色 `master/data/client`，性能和稳定性更好。如果部署的集群为`测试环境`使用或仅为`功能验证`，希望尽量节省资源，对稳定性和性能无要求，可以使用 `mix` 模式集群。（在配置文件中删除 `[master]/[data]/[client]` 配置）
+1. 关于**节点角色**说明：如果部署的集群为`生产环境`使用，建议区分 es 节点角色 `master/data/client`，性能和稳定性更好。如果部署的集群为`测试环境`使用或仅为`功能验证`，希望尽量节省资源，对稳定性和性能无要求，可以使用 `mix` 模式集群（在配置文件中删除 `[master]/[data]/[client]` 配置）。
 
-2. 安装程序会自动下载并安装配置 Oracle JDK_1.8，如果已有现成的 Java 环境，可以在安装命令中添加如下选项跳过：
+2. 安装程序会自动下载并安装配置 `Oracle JDK_1.8` 环境，如果已有现成的 Java 运行环境，可以在安装命令中添加如下选项跳过：
 ```shell
 --skip-tags java
 ```
@@ -55,6 +56,10 @@ ansible-playbook -i example.cfg setup.yml -v
 ```
 --skip-tags ik
 ```
+
+---
+
+更多安装部署程序介绍及高级用法还可以参考：[这里](./docs/es-easy-setup-usage.md)。
 
 ## :memo: License
 
