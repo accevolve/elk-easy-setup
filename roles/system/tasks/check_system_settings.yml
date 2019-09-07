@@ -37,7 +37,7 @@
   when: >
     hostvars[inventory_hostname]['_mount']['scheduler'][item] != '[noop]'
     and hostvars[inventory_hostname]['_mount']['scheduler'][item] != '[deadline]'
-  tags: ["scheduler"]
+  tags: ["never", "scheduler"]
 
 - name: filesystem checks
   fail: msg="Invalid filesystem config, it should be xfs or ext4"
@@ -45,4 +45,4 @@
   when: >
     hostvars[inventory_hostname]['_mount']['filesystem'][item] != 'xfs'
     and hostvars[inventory_hostname]['_mount']['filesystem'][item] != 'ext4'
-  tags: ["filesystem"]
+  tags: ["never", "filesystem"]
