@@ -4,6 +4,16 @@ es-easy-setup 基于 [Ansible](https://www.ansible.com/) 开发，支持快速�
 
 ## 使用说明
 
+## 如何基于同一套 es-easy-setup 部署多个集群
+
+多个部署集群部署流程完全一致，只是各集群配置项可能会有所不同。
+
+es-easy-setup 配置项集中在 `vars` 目录和 `example.cfg` 中。
+
+部署某个集群时，只需要将 `vars` 和 `example.cfg` 拷贝一份（可放至任何目录，但两者必须放在一起），修改配置项至需要值，然后多个集群用同一份 `setup.yml` 执行部署即可。
+
+**es-easy-setup 首先会读取 `example.cfg` 所在本地的 `vars` 配置，如果没有再去读取 `setup.yml` 所在目录的 `vars` 配置。**
+
 ## 如何部署 mix 集群（测试集群）
 
 mix 集群不单独部署 `maste/data/client` 角色节点，一个节点可以混合扮演多个角色，这种形式集群通常用于测试环境及非高可用集群。生产环境不建议使用。
@@ -17,16 +27,6 @@ mix 集群不单独部署 `maste/data/client` 角色节点，一个节点可以�
 默认每个 mix 节点都开启了 `master、data、client` 角色。
 
 其他流程不变。
-
-## 如何基于同一套 es-easy-setup 部署多个集群
-
-多个部署集群部署流程完全一致，只是各集群配置项可能会有所不同。
-
-es-easy-setup 配置项集中在 `vars` 目录和 `example.cfg` 中。
-
-部署某个集群时，只需要将 `vars` 和 `example.cfg` 拷贝一份（可放至任何目录，但两者必须放在一起），修改配置项至需要值，然后多个集群用同一份 `setup.yml` 执行部署即可。
-
-**es-easy-setup 首先会读取 `example.cfg` 所在本地的 `vars` 配置，如果没有再去读取 `setup.yml` 所在目录的 `vars` 配置。**
 
 ## 是否支持单个节点添加多个自定义配置选项
 
