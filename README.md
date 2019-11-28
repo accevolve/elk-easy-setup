@@ -61,6 +61,26 @@ ansible-playbook -i example.cfg setup.yml -v
 
 更多安装部署程序介绍及**高级用法**还可以参考：[这里](./docs/es-easy-setup-usage.md)。
 
+## :whale: 部署后目录结构示例
+
+```
+project-name
+└── cluster-name
+    └── elasticsearch
+        ├── config
+        │   ├── client0
+        │   ├── data0_0
+        │   └── master1
+        ├── data
+        │   ├── data0_0
+        │   └── master1
+        ├── logs
+        │   ├── client0
+        │   ├── data0_0
+        │   └── master1
+        └── start_elasticsearch.sh
+```
+
 ## :memo: License
 
 This project is [Apache 2.0](./LICENSE) licensed.
