@@ -22,14 +22,18 @@
     - set_fact:
         unicast_host: "{{ hostvars[item_master_host].ansible_host }}:{{ hostvars[item_master_host].transport_port \
           if hostvars[item_master_host].transport_port is defined else transport_port }}"
+        initial_master_node: "{{ hostvars[item_master_host].node_name if hostvars[item_master_host].node_name is defined else node_name }}"
       loop: "{{ groups['master'] if groups['master'] is defined else groups['mix'] }}"
       loop_control:
         loop_var: item_master_host
+        #index_var: item_master_index
       when: (hostvars[item_master_host].node_master if hostvars[item_master_host].node_master is defined else node_master) | bool
       register: host_fact
     - set_fact:
         unicast_hosts: "{{ host_fact.results | selectattr('ansible_facts', 'defined') | \
           selectattr('ansible_facts.unicast_host', 'defined') | map(attribute='ansible_facts.unicast_host') | list }}"
+        initial_master_nodes: "{{ host_fact.results | selectattr('ansible_facts', 'defined') | \
+          selectattr('ansible_facts.initial_master_node', 'defined') | map(attribute='ansible_facts.initial_master_node') | list }}"
 
 - name: Deploy elasticsearch master node
   hosts: master

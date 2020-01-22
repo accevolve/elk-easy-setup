@@ -25,7 +25,8 @@
 - name: Download elasticsearch file
   import_tasks: get_es.yml
   vars:
-    es_version_str: "{{ es_version if use_oss is undefined or not use_oss or es_version is version('6.3.0', '<') else 'oss-' + es_version }}"
+    es_version_oss: "{{ es_version if use_oss is undefined or not use_oss or es_version is version('6.3.0', '<') else 'oss-' + es_version }}"
+    es_version_str: "{{ es_version_oss if es_version is version('7.0.0', '<') else es_version_oss + '-linux-x86_64' }}"
 
 - name: Configuring elasticsearch settings
   import_tasks: config_es_settings.yml

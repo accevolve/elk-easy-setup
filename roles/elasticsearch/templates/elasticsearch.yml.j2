@@ -59,19 +59,34 @@ path.logs: {{ node_logs_dir | to_json }}
 {% if es_config['network.host'] is undefined %}
 network.host: {{ network_host | to_json }}
 {% endif %}
+{% if es_version is version('6.7.0', '>=') %}
+{% if es_config['transport.port'] is undefined %}
+transport.port: {{ node_transport_port | to_json }}
+{% endif %}
+{% else %}
 {% if es_config['transport.tcp.port'] is undefined %}
 transport.tcp.port: {{ node_transport_port | to_json }}
+{% endif %}
 {% endif %}
 {% if es_config['http.port'] is undefined %}
 http.port: {{ node_http_port | to_json }}
 {% endif %}
 
 # discovery
+{% if es_version is version('7.0.0', '>=') %}
+{% if es_config['discovery.seed_hosts'] is undefined %}
+discovery.seed_hosts: {{ unicast_hosts | unique | to_json }}
+{% endif %}
+{% if es_config['cluster.initial_master_nodes'] is undefined %}
+cluster.initial_master_nodes: {{ initial_master_nodes | unique | to_json }}
+{% endif %}
+{% else %}
 {% if es_config['discovery.zen.ping.unicast.hosts'] is undefined %}
 discovery.zen.ping.unicast.hosts: {{ unicast_hosts | unique | to_json }}
 {% endif %}
 {% if es_config['discovery.zen.minimum_master_nodes'] is undefined %}
 discovery.zen.minimum_master_nodes: {{ minimum_master_nodes | to_json }}
+{% endif %}
 {% endif %}
 
 # security

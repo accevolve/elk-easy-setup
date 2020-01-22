@@ -17,7 +17,7 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-start_6x_es() {
+start_es() {
     # check args
     if [ $# -ne 1 ]; then
         echo "[`date +'%Y-%m-%d %H:%M:%S'`] Invalid input args number."
@@ -61,9 +61,9 @@ do
 
     # check active es version
     FIRST_CHR=`echo $ES_ACTIVE_VERSION | cut -c 1`
-    if [ $FIRST_CHR -eq 6 ]; then
+    if [ $FIRST_CHR -eq 6 -o $FIRST_CHR -eq 7 ]; then
         echo "[`date +'%Y-%m-%d %H:%M:%S'`] Start Es node ($conf)."
-        start_6x_es $conf
+        start_es $conf
     elif [ $FIRST_CHR -eq 5 ]; then
         echo "[`date +'%Y-%m-%d %H:%M:%S'`] Start Es node ($conf)."
         start_5x_es $conf

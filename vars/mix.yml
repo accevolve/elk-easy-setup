@@ -3,10 +3,10 @@
 
 jvm_heap_size: 8g
 
-# same as data type
+# deploy same as data type
 node_type: data
 # you can specify start index, default from 0: mix0, mix1...
-node_name: mix{{ groups["mix"].index(inventory_hostname) + 0 }}
+node_name: mix{{ groups["mix"].index(item_master_host if item_master_host is defined else inventory_hostname) + 0 }}
 #node_zones: "{{ ansible_play_hosts }}"
 #node_zone: "{{ inventory_hostname }}"
 

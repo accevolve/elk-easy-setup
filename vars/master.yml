@@ -5,7 +5,7 @@ jvm_heap_size: 4g
 
 node_type: master
 # you can specify start index, default from 0: master0, master1...
-node_name: master{{ groups["master"].index(inventory_hostname) + 0 }}
+node_name: master{{ groups["master"].index(item_master_host if item_master_host is defined else inventory_hostname) + 0 }}
 #node_zones: "{{ ansible_play_hosts }}"
 #node_zone: "{{ inventory_hostname }}"
 
