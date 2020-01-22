@@ -1,9 +1,9 @@
 # 一键部署高可用 Elasticsearch 集群
 
-![](https://img.shields.io/badge/ansible-%3E%3D2.5-red) ![](https://img.shields.io/badge/elasticsearch-5.x%2C%206.x-9cf) ![](https://img.shields.io/badge/license-Apache--2.0-brightgreen)
+![](https://img.shields.io/badge/ansible-%3E%3D2.5-red) ![](https://img.shields.io/badge/elasticsearch-5.x%2C%206.x%2C%207.x-9cf) ![](https://img.shields.io/badge/license-Apache--2.0-brightgreen)
 
-> 1. 此安装部署程序运行环境要求： Ansible >= 2.5（es 部署节点无须安装，只需确保有 SSH 登录权限）  
-> 2. 目前支持部署的 es 版本：5.x, 6.x
+> 1. 此安装部署程序运行环境要求： Ansible >= 2.5（es 部署节点无须安装，只需确保有 SSH 登录权限）
+> 2. 支持部署的 es 版本：5.x, 6.x, 7.x
 
 ## :rocket: 快速使用说明
 
