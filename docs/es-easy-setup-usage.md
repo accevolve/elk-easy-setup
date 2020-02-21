@@ -8,7 +8,7 @@ es-easy-setup 基于 [Ansible](https://www.ansible.com/) 开发，支持快速�
 
 多个部署集群部署流程完全一致，只是各集群配置项可能会有所不同。
 
-es-easy-setup 配置项集中在 `vars` 目录和 `example.cfg` 中。每个集群可以独自拥有各自的 `vars` 和 `example.cfg` 配置。
+es-easy-setup 配置项集中在 `vars` 目录和 `example.cfg` 中。每个集群可以各自拥有独立的 `vars` 和 `example.cfg` 配置。
 
 部署某个集群时，只需要将 `vars` 和 `example.cfg` 拷贝一份（可放至任何目录，但两者必须放在一起），修改配置项至需要值，然后继续使用 `setup.yml` 安装部署即可。
 
