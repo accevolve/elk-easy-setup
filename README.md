@@ -25,7 +25,7 @@ ansible-playbook -i example.cfg setup.yml -v
 
 ### 第四步：启动集群
 
-安装完毕后进入 `/home/<部署用户>/elk/elasticsearch`目录，内含 `start_elasticsearch.sh` 启动脚本。执行 `sh start_elasticsearch.sh` 命令启动 es 服务即可。
+安装完毕后进入 `/home/<部署用户>/<project_name>/<cluster_name>/elasticsearch`目录，内含 `start_elasticsearch.sh` 启动脚本。执行 `sh start_elasticsearch.sh` 命令启动 es 服务即可。
 
 ### 第五步：部署完毕
 

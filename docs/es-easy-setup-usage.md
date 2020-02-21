@@ -8,11 +8,11 @@ es-easy-setup 基于 [Ansible](https://www.ansible.com/) 开发，支持快速�
 
 多个部署集群部署流程完全一致，只是各集群配置项可能会有所不同。
 
-es-easy-setup 配置项集中在 `vars` 目录和 `example.cfg` 中。
+es-easy-setup 配置项集中在 `vars` 目录和 `example.cfg` 中。每个集群可以独自拥有各自的 `vars` 和 `example.cfg` 配置。
 
-部署某个集群时，只需要将 `vars` 和 `example.cfg` 拷贝一份（可放至任何目录，但两者必须放在一起），修改配置项至需要值，然后多个集群用同一份 `setup.yml` 执行部署即可。
+部署某个集群时，只需要将 `vars` 和 `example.cfg` 拷贝一份（可放至任何目录，但两者必须放在一起），修改配置项至需要值，然后继续使用 `setup.yml` 安装部署即可。
 
-**es-easy-setup 首先会读取 `example.cfg` 所在本地的 `vars` 配置，如果没有再去读取 `setup.yml` 所在目录的 `vars` 配置。**
+**es-easy-setup 首先会读取 `example.cfg` 所在本地的 `vars` 配置，如果没有再去读取 `setup.yml` 所在目录的 `vars` 配置（全局默认）。**
 
 ## 如何部署 mix 集群（测试集群）
 
@@ -22,11 +22,19 @@ mix 集群不单独部署 `maste/data/client` 角色节点，一个节点可以�
 
 `example.cfg` 配置文件下删除 `[master], [data], [client]` 配置组，放开 `[mix]` 组配置（默认被注释，不建议 mix 和其他配置组同时使用）。
 
-合理配置 `minimum_master_nodes `值（`master` 角色节点数 / 2 + 1）。
+合理配置 `minimum_master_nodes `值（`master` 角色节点数 / 2 + 1）。（注：es 5-6 版本该选项必填，7.0 之后该选项已废弃，可随意填写或删除）
 
 默认每个 mix 节点都开启了 `master、data、client` 角色。
 
 其他流程不变。
+
+## 如何关闭某些 mix 节点的 `master/data` 角色
+
+关闭 `master` 角色：`example.cfg` 配置文件 → `[mix]` 配置组 → 具体的某个节点 `host` → 在后面添加 `node_master=false`
+
+关闭 `data` 角色：`node_data=false`，其他与上同理。
+
+关闭 `master` 角色后，部署的 `unicast_host` 配置即不会包含这个节点地址。
 
 ## 是否支持单个节点添加多个自定义配置选项
 
@@ -37,14 +45,6 @@ mix 集群不单独部署 `maste/data/client` 角色节点，一个节点可以�
 # 指定其他参数例子
 m1  ansible_host=10.201.113.5 node_master=true node_data=true http_port=9201 transport_port=9301 node_name=example
 ```
-
-## 如何关闭某些 mix 节点的 `master/data` 角色
-
-关闭 `master` 角色：`example.cfg` 配置文件 → `[mix]` 配置组 → 具体的某个节点 `host` → 在后面添加 `node_master=false`
-
-关闭 `data` 角色：`node_data=false`，其他与上同理。
-
-关闭 `master` 角色后，部署的 `unicast_host` 配置即不会包含这个节点地址。
 
 ## 如何单独配置某些节点的端口
 
