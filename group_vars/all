@@ -7,3 +7,6 @@ base_dir: "{{ home_dir }}/{{ project_name }}"
 # download url
 download_url: "https://artifacts.elastic.co/downloads/elasticsearch"
 ik_download_url: "https://github.com/medcl/elasticsearch-analysis-ik/releases/download"
+
+# use elasticsearch bundled JDK?
+no_jdk: false

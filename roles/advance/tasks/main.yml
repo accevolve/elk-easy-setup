@@ -4,4 +4,5 @@
 
 - name: Prepare jdk_1.8
   import_tasks: jdk8.yml
+  when: es_version is version('7.0.0', '<') or (es_version is version('7.0.0', '>=') and no_jdk)
   tags: ["java"]
