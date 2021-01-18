@@ -69,10 +69,5 @@
   gather_facts: false
   vars_files:
     - ["{{ inventory_dir }}/vars/mix.yml", "vars/mix.yml"]
-  tasks:
-    - include_role:
-        name: elasticsearch
-      vars:
-        sequence_id: "{{ item.id }}"
-        data_mount_dirs: "{{ item.data_dirs }}"
-      with_items: "{{ data_node_configs }}"
+  roles:
+    - {role: elasticsearch, data_mount_dirs: "{{ mount_dirs[0] }}" }
