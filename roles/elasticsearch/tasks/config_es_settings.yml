@@ -49,14 +49,30 @@
     dest: "{{ node_conf_dir }}/elasticsearch.yml"
     backup: yes
 
-- name: Generate & copy log4j2.properties file
+- name: Copy default log4j2.properties
   copy:
-    src: "roles/elasticsearch/templates/{{ log4j_src_file }}"
-    dest: "{{ node_conf_dir }}/log4j2.properties"
+    src: "{{ default_conf_dir }}/log4j2.properties"
+    dest: "{{ node_conf_dir }}"
+    remote_src: yes
     backup: yes
 
-- name: Generate & copy jvm.options file
-  template:
-    src: jvm.options.j2
-    dest: "{{ node_conf_dir }}/jvm.options"
+- name: Copy default jvm.options
+  copy:
+    src: "{{ default_conf_dir }}/jvm.options"
+    dest: "{{ node_conf_dir }}"
+    remote_src: yes
+    backup: yes
+
+- name: Replace jvm -Xms
+  replace:
+    path: "{{ node_conf_dir }}/jvm.options"
+    regexp: '^\-Xms.*g'
+    replace: "-Xms{{ jvm_heap_size }}"
+    backup: yes
+
+- name: Replace jvm -Xmx
+  replace:
+    path: "{{ node_conf_dir }}/jvm.options"
+    regexp: '^\-Xmx.*g'
+    replace: "-Xmx{{ jvm_heap_size }}"
     backup: yes

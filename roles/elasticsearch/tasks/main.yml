@@ -40,7 +40,7 @@
     node_data_dir: "{{ es_data_dir }}/{{ node_full_name }}"
     node_logs_dir: "{{ es_logs_dir }}/{{ node_full_name }}"
     data_mount_list: "{{ q('list', data_mount_dirs) if data_mount_dirs is string else data_mount_dirs }}"
-    log4j_src_file: "{{ 'log4j2.properties.6x.j2' if es_version is version('6.3.0', '>=') else 'log4j2.properties.5x.j2' }}"
+    default_conf_dir: "{{ es_home }}/elasticsearch-{{ es_version }}/config"
 
 - name: Generate start elasticsearch shell
   template:
