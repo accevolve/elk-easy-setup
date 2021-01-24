@@ -1,0 +1,14 @@
+
+node.name: {{ pipeline_name }}
+http.host: 0.0.0.0
+
+path.data: {{ node_data_dir }}
+path.config: {{ node_conf_dir }}
+path.logs: {{ node_logs_dir }}
+
+pipeline.workers: {{ pipeline_workers }}
+
+pipeline.batch.size: {{ pipeline_batch_size }}
+pipeline.batch.delay: 5
+
+#log.level: info

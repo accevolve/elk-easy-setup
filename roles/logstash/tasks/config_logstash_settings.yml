@@ -1,0 +1,53 @@
+---
+## Configuring Logstash settings
+
+- name: Create logstash mgr directory
+  file:
+    path: "{{ item_mgr_dir }}"
+    state: directory
+  loop:
+    - "{{ node_conf_dir }}"
+    - "{{ node_data_dir }}"
+    - "{{ node_logs_dir }}"
+  loop_control:
+    loop_var: item_mgr_dir
+
+- name: Generate & copy logstash pipeline config file
+  template:
+    src: pipeline.conf.j2
+    dest: "{{ node_conf_dir }}/pipeline.conf"
+    backup: yes
+
+- name: Generate & copy logstash settings file
+  template:
+    src: logstash.yml.j2
+    dest: "{{ node_conf_dir }}/logstash.yml"
+    backup: yes
+
+- name: Copy default log4j2.properties
+  copy:
+    src: "{{ default_conf_dir }}/log4j2.properties"
+    dest: "{{ node_conf_dir }}"
+    remote_src: yes
+    backup: yes
+
+- name: Copy default jvm.options
+  copy:
+    src: "{{ default_conf_dir }}/jvm.options"
+    dest: "{{ node_conf_dir }}"
+    remote_src: yes
+    backup: yes
+
+- name: Replace jvm -Xms
+  replace:
+    path: "{{ node_conf_dir }}/jvm.options"
+    regexp: '^\-Xms.*g'
+    replace: "-Xms{{ jvm_heap_size }}"
+    backup: yes
+
+- name: Replace jvm -Xmx
+  replace:
+    path: "{{ node_conf_dir }}/jvm.options"
+    regexp: '^\-Xmx.*g'
+    replace: "-Xmx{{ jvm_heap_size }}"
+    backup: yes

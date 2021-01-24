@@ -1,0 +1,12 @@
+---
+- name: Prepare in advance
+  hosts: all
+  gather_facts: false
+  roles:
+    - advance
+
+- name: Deploy logstash
+  hosts: logstash
+  gather_facts: false
+  roles:
+    - logstash

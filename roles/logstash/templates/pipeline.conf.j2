@@ -1,0 +1,21 @@
+input {
+    kafka {
+        topics => {{ topic_list | unique | to_json }}
+        bootstrap_servers => {{ kafka_servers | to_json }}
+        client_id => {{ inventory_hostname | to_json }}
+        group_id => {{ group_id | to_json }}
+        consumer_threads => {{ consumer_threads | to_json }}
+        auto_offset_reset => {{ auto_offset_reset | to_json }}
+        #codec => "json" # default codec
+    }
+}
+
+filter  {
+}
+
+output {
+    elasticsearch {
+        hosts => {{ es_client_hosts | to_json }}
+        index => {{ es_index_name | to_json }}
+    }
+}

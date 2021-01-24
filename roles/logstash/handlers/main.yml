@@ -1,0 +1,6 @@
+---
+- name: untar logstash
+  unarchive:
+    src: "{{ logstash_home }}/logstash-{{ es_version }}.tar.gz"
+    dest: "{{ logstash_home }}"
+    remote_src: yes

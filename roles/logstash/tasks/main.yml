@@ -1,0 +1,25 @@
+---
+- name: Create logstash home directory
+  file:
+    path: "{{ logstash_home }}"
+    state: directory
+
+- name: Download logstash file
+  import_tasks: get_logstash.yml
+  vars:
+    es_version_oss: "{{ es_version if use_oss is undefined or not use_oss or es_version is version('6.3.0', '<') else 'oss-' + es_version }}"
+    es_version_str: "{{ es_version_oss if es_version is version('7.0.0', '<') else es_version_oss + '-linux-x86_64' }}"
+
+- name: Generate start logstash shell
+  template:
+    src: start_logstash.sh.j2
+    dest: "{{ logstash_home }}/start_logstash.sh"
+    #backup: yes
+
+- name: Configuring logstash settings
+  import_tasks: config_logstash_settings.yml
+  vars:
+    node_conf_dir: "{{ logstash_conf_dir }}/{{ pipeline_name }}"
+    node_data_dir: "{{ logstash_data_dir }}/{{ pipeline_name }}"
+    node_logs_dir: "{{ logstash_logs_dir }}/{{ pipeline_name }}"
+    default_conf_dir: "{{ logstash_home }}/logstash-{{ es_version }}/config"

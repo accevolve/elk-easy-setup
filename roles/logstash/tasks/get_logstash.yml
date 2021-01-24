@@ -1,0 +1,13 @@
+- name: Download logstash
+  get_url:
+    url: "{{ download_url }}/logstash-{{ es_version_str }}.tar.gz"
+    dest: "{{ logstash_home }}/logstash-{{ es_version_str }}.tar.gz"
+  #notify:
+  #  - untar logstash
+
+- name: Unarchive logstash
+  unarchive:
+    src: "{{ logstash_home }}/logstash-{{ es_version_str }}.tar.gz"
+    dest: "{{ logstash_home }}"
+    creates: "{{ logstash_home }}/logstash-{{ es_version }}"
+    remote_src: yes

@@ -1,0 +1,41 @@
+#! /bin/sh
+
+echo "===START==="
+
+LOGSTASH_HOME="{{ logstash_home }}"
+
+cd $LOGSTASH_HOME
+if [ $? -ne 0 ]; then
+    echo "[`date +'%Y-%m-%d %H:%M:%S'`] Enter to logstash_home failed."
+    exit 1
+fi
+
+start_5x_logstash() {
+    # check args
+    if [ $# -ne 1 ]; then
+        echo "[`date +'%Y-%m-%d %H:%M:%S'`] Invalid input args number."
+        exit 1
+    fi
+
+    # do start
+    nohup ./logstash-{{ es_version }}/bin/logstash --path.settings $LOGSTASH_HOME/config/$1/ -f $LOGSTASH_HOME/config/$1/pipeline.conf >/dev/null 2>&1 &
+    if [ $? -ne 0 ]; then
+        echo "[`date +'%Y-%m-%d %H:%M:%S'`] Start logstash node($1) failed."
+        exit 1
+    fi
+}
+
+CONF_DIRS=`ls ./config/`
+for conf in $CONF_DIRS
+do
+    IS_STARTED=`jps -m | grep $LOGSTASH_HOME/config/$conf | grep -v grep | wc -l`
+    if [ $IS_STARTED -eq 0 ]; then
+        echo "[`date +'%Y-%m-%d %H:%M:%S'`] Start logstash node ($conf)."
+        start_5x_logstash $conf
+    else
+        echo "[`date +'%Y-%m-%d %H:%M:%S'`] Skip start ($conf)."
+    fi
+done
+
+echo "===END==="
+

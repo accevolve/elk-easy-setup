@@ -1,0 +1,12 @@
+---
+# default settings
+logstash_home: "{{ base_dir }}/{{ cluster_name }}/logstash"
+logstash_conf_dir: "{{ logstash_home }}/config"
+logstash_logs_dir: "{{ logstash_home }}/logs"
+logstash_data_dir: "{{ logstash_home }}/data"
+
+# download url
+download_url: "{{ official_download_url }}/logstash"
+
+# oss version
+use_oss: true
