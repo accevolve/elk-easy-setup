@@ -5,6 +5,9 @@ es_conf_dir: "{{ es_home }}/config"
 es_logs_dir: "{{ es_home }}/logs"
 es_data_dir: "{{ es_home }}/data"
 
+# download url
+download_url: "{{ official_download_url }}/elasticsearch"
+
 # user inputs
 es_config: {}
 
