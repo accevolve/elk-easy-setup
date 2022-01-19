@@ -25,6 +25,7 @@ start_es() {
     fi
 
     # do start
+    export ES_JAVA_OPTS="$ES_JAVA_OPTS -Dlog4j2.formatMsgNoLookups=true"
     export ES_PATH_CONF=$ES_HOME/config/$1
     ./elasticsearch-${ES_ACTIVE_VERSION}/bin/elasticsearch -d >/dev/null 2>&1
     if [ $? -ne 0 ]; then
@@ -41,6 +42,7 @@ start_5x_es() {
     fi
 
     # do start
+    export ES_JAVA_OPTS="$ES_JAVA_OPTS -Dlog4j2.formatMsgNoLookups=true"
     export ES_JVM_OPTIONS=$ES_HOME/config/$1/jvm.options
     ./elasticsearch-${ES_ACTIVE_VERSION}/bin/elasticsearch -d -Epath.conf=$ES_HOME/config/$1/ >/dev/null 2>&1
     if [ $? -ne 0 ]; then
