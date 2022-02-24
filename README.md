@@ -61,24 +61,42 @@ ansible-playbook -i example.cfg setup.yml -v
 
 更多安装部署程序介绍及**高级用法**还可以参考：[这里](./docs/es-easy-setup-usage.md)。
 
+## :swan: Logstash 部署说明
+
+Logstash 部署说明文档：[Logstash setup usage](./docs/logstash-setup-usage.md)
+
+## :dodo: Kibana 部署说明
+
+Kibana 部署说明文档：[Kibana setup usage](./docs/kibana-setup-usage.md)
+
 ## :whale: 部署后目录结构示例
 
 ```
 project-name
 └── cluster-name
-    └── elasticsearch
+    ├── elasticsearch
+    │   ├── config
+    │   │   ├── client0
+    │   │   ├── data0_0
+    │   │   └── master1
+    │   ├── data
+    │   │   ├── data0_0
+    │   │   └── master1
+    │   ├── logs
+    │   │   ├── client0
+    │   │   ├── data0_0
+    │   │   └── master1
+    │   └── start_elasticsearch.sh
+    ├── kibana
+    │   ├── config
+    │   ├── data
+    │   ├── logs
+    │   └── start_kibana.sh
+    └── logstash
         ├── config
-        │   ├── client0
-        │   ├── data0_0
-        │   └── master1
         ├── data
-        │   ├── data0_0
-        │   └── master1
         ├── logs
-        │   ├── client0
-        │   ├── data0_0
-        │   └── master1
-        └── start_elasticsearch.sh
+        └── start_logstash.sh
 ```
 
 ## :memo: License
