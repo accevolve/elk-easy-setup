@@ -1,0 +1,26 @@
+
+server.host: 0.0.0.0
+
+server.port: {{kibana_server_port}}
+
+{% if es_version is version('6.6.0', '<') %}
+elasticsearch.url: {{es_client_hosts}}
+{% else %}
+elasticsearch.hosts: {{es_client_hosts}}
+{% endif %}
+
+logging.dest: {{ kibana_logs_dir }}/kibana.log
+
+path.data: {{ node_data_dir }}
+
+{% if server_base_path is defined %}
+server.basePath: /{{ server_base_path }}
+{% endif %}
+
+{% if kibana_index is defined %}
+kibana.index: "{{ kibana_index }}"
+{% endif %}
+
+{% if default_app_id is defined %}
+kibana.defaultAppId: "{{ default_app_id }}"
+{% endif %}

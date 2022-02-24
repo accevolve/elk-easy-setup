@@ -1,0 +1,23 @@
+---
+- name: Create kibana home directory
+  file:
+    path: "{{ kibana_home }}"
+    state: directory
+
+- name: Download kibana file
+  import_tasks: get_kibana.yml
+  vars:
+    es_version_str: "{{ es_version if use_oss is undefined or not use_oss or es_version is version('6.3.0', '<') else 'oss-' + es_version }}"
+
+- name: Generate start kibana shell
+  template:
+    src: start_kibana.sh.j2
+    dest: "{{ kibana_home }}/start_kibana.sh"
+    #backup: yes
+
+- name: Configuring kibana settings
+  import_tasks: config_kibana_settings.yml
+  vars:
+    node_conf_dir: "{{ kibana_conf_dir }}"
+    node_data_dir: "{{ kibana_data_dir }}"
+    node_logs_dir: "{{ kibana_logs_dir }}"

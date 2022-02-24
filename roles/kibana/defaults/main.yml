@@ -1,0 +1,9 @@
+---
+# default settings
+kibana_home: "{{ base_dir }}/{{ cluster_name }}/kibana"
+kibana_conf_dir: "{{ kibana_home }}/config"
+kibana_logs_dir: "{{ kibana_home }}/logs"
+kibana_data_dir: "{{ kibana_home }}/data"
+
+# oss version
+use_oss: true

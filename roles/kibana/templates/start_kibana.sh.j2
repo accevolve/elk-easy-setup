@@ -1,0 +1,33 @@
+#! /bin/sh
+
+echo "===START==="
+
+KIBANA_HOME="{{ kibana_home }}"
+
+cd $KIBANA_HOME
+if [ $? -ne 0 ]; then
+    echo "[`date +'%Y-%m-%d %H:%M:%S'`] Enter to kibana_home failed."
+    exit 1
+fi
+
+start_5x_kibana() {
+    # do start
+    nohup ./kibana-{{ es_version }}-linux-x86_64/bin/kibana --config $KIBANA_HOME/config/kibana.yml  >/dev/null 2>&1 &
+    if [ $? -ne 0 ]; then
+        echo "[`date +'%Y-%m-%d %H:%M:%S'`] Start kibana node failed."
+        exit 1
+    fi
+}
+
+
+IS_STARTED=`ps -ef | grep $KIBANA_HOME/config/kibana.yml | grep -v grep | wc -l`
+if [ $IS_STARTED -eq 0 ]; then
+    echo "[`date +'%Y-%m-%d %H:%M:%S'`] Start kibana node."
+    start_5x_kibana
+else
+    echo "[`date +'%Y-%m-%d %H:%M:%S'`] Skip start."
+fi
+
+
+echo "===END==="
+

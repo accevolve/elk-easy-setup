@@ -1,0 +1,13 @@
+- name: Download kibana
+  get_url:
+    url: "{{ download_url }}/kibana-{{ es_version_str }}-linux-x86_64.tar.gz"
+    dest: "{{ kibana_home }}/kibana-{{ es_version_str }}-linux-x86_64.tar.gz"
+  #notify:
+  #  - untar kibana
+
+- name: Unarchive kibana
+  unarchive:
+    src: "{{ kibana_home }}/kibana-{{ es_version_str }}-linux-x86_64.tar.gz"
+    dest: "{{ kibana_home }}"
+    creates: "{{ kibana_home }}/kibana-{{ es_version }}-linux-x86_64"
+    remote_src: yes

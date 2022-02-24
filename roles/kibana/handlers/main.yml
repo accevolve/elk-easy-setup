@@ -1,0 +1,6 @@
+---
+- name: untar kibana
+  unarchive:
+    src: "{{ kibana_home }}/kibana-{{ es_version }}-linux-x86_64.tar.gz"
+    dest: "{{ kibana_home }}"
+    remote_src: yes

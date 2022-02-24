@@ -1,0 +1,6 @@
+---
+- name: Deploy kibana
+  hosts: kibana
+  gather_facts: false
+  roles:
+    - kibana

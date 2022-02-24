@@ -1,0 +1,23 @@
+---
+## Configuring kibana settings
+
+- name: Create kibana mgr directory
+  file:
+    path: "{{ item_mgr_dir }}"
+    state: directory
+  loop:
+    - "{{ node_conf_dir }}"
+    - "{{ node_data_dir }}"
+    - "{{ node_logs_dir }}"
+  loop_control:
+    loop_var: item_mgr_dir
+
+- name: Generate & copy kibana settings file
+  template:
+    src: kibana.yml.j2
+    dest: "{{ node_conf_dir }}/kibana.yml"
+    backup: yes
+
+
+
+
